@@ -8,19 +8,32 @@ import org.eclipse.jetty.http.HttpMethod;
 
 public class MyClient {
 	
-	public String send(String message,String path, String method) throws Exception {
+	public String send(String message,String path, String method, String content) throws Exception {
 		HttpMethod httpMethod = HttpMethod.GET;
-		if(method.equals("post")) httpMethod = HttpMethod.POST;
 		HttpClient httpClient = new HttpClient();
 		httpClient.start();
-				
-		
-		ContentResponse contentRes = httpClient.newRequest((String) path).method(httpMethod).send();
-
-        httpClient.stop();
-        return contentRes.getContentAsString();
-		
-			    
-	   	}
-
+		ContentResponse contentRes = null;
+		try {
+			if(method.equals("post")) {
+				httpMethod = HttpMethod.POST;
+				contentRes = httpClient.newRequest((String) path)
+						.content(new StringContentProvider(content, "utf-8"))
+						.header(HttpHeader.CONTENT_TYPE, "application/json")
+						.method(httpMethod)
+						.send();
+			}
+			else {
+				httpMethod = HttpMethod.GET;
+				contentRes = httpClient.newRequest((String) path)
+						.header(HttpHeader.CONTENT_TYPE, "application/json")
+						.method(httpMethod)
+						.send();
+			}
+		} catch (ExecutionException executionException) {
+			executionException.printStackTrace();
+		} finally {
+			httpClient.stop();
+		}
+		return contentRes.getContentAsString();
+        }
 }
