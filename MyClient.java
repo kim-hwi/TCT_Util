@@ -9,7 +9,7 @@ import org.eclipse.jetty.http.HttpMethod;
 public class MyClient {
 	
 	public String send(String message,String path, String method, String content) throws Exception {
-		# org.eclipse.jetty.client.api.Request request = httpClient.POST(url);
+		# org.eclipse.jetty.client.api.Request request = httpClient.POST(path);
 		HttpMethod httpMethod = HttpMethod.GET;
 		HttpClient httpClient = new HttpClient();
 		httpClient.start();
